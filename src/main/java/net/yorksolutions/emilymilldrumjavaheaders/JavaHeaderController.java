@@ -2,8 +2,11 @@ package net.yorksolutions.emilymilldrumjavaheaders;
 
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Map;
 
@@ -23,14 +26,17 @@ public class JavaHeaderController {
 
     @GetMapping("/ipaddress")
     public String ipAd() {
-        //return this.javaHeaderService.ip();
         return this.javaHeaderService.getClientIp();
     }
 
     @GetMapping("/date")
     public String date() {
-        //return this.javaHeaderService.ip()
         return this.javaHeaderService.date();
+    }
+
+    @GetMapping("/md5/{input}")
+    public String md5(@PathVariable String input) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        return this.javaHeaderService.md5(input);
     }
 
 

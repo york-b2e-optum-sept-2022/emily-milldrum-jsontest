@@ -5,8 +5,13 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -16,13 +21,13 @@ import java.util.Map;
 public class JavaHeaderService {
     private final String LOCALHOST_IPV4 = "127.0.0.1";
     private final String LOCALHOST_IPV6 = "0:0:0:0:0:0:0:1";
-    private static HttpServletRequest request;
+    private HttpServletRequest request;
     private static String remoteAddr = "";
     public JavaHeaderService(HttpServletRequest request) {
         this.request = request;
     }
 
-    public static String ip(){
+    public String ip(){
         if (request != null){
             remoteAddr = request.getHeader("X-FORWARDED-FOR");
             if (remoteAddr == null || "".equals(remoteAddr)) {
@@ -82,4 +87,23 @@ public class JavaHeaderService {
         Date date = new Date();
         return date.toString();
     }
+
+    public String md5(String incString) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] bytesOfMessage = incString.getBytes(StandardCharsets.UTF_8);
+        byte[] theMD5digest = md.digest(bytesOfMessage);
+
+        //converting byte array into signum representation
+        BigInteger no = new BigInteger(1, theMD5digest);
+//converting message digest into hex value
+        String hashtext = no.toString(16);
+        while (hashtext.length() < 32) {
+            hashtext = "0" + hashtext;
+        }
+
+        return hashtext;
+        //return theMD5digest.toString();
+    }
+
+
 }
