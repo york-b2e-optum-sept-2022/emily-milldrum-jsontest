@@ -48,15 +48,15 @@ public class JavaHeaderService {
 
     public String getClientIp() {
         String ipAddress = request.getHeader("X-Forwarded-For");
-        if(StringUtils.hasLength(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+        if(StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("Proxy-Client-IP");
         }
 
-        if(StringUtils.hasLength(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+        if(StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("WL-Proxy-Client-IP");
         }
 
-        if(StringUtils.hasLength(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+        if(StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getRemoteAddr();
             if(LOCALHOST_IPV4.equals(ipAddress) || LOCALHOST_IPV6.equals(ipAddress)) {
                 try {
@@ -68,7 +68,7 @@ public class JavaHeaderService {
             }
         }
 
-        if(!StringUtils.hasLength(ipAddress)
+        if(!StringUtils.isEmpty(ipAddress)
                 && ipAddress.length() > 15
                 && ipAddress.indexOf(",") > 0) {
             ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
