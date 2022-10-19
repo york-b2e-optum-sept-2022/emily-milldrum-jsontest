@@ -1,11 +1,7 @@
 package net.yorksolutions.emilymilldrumjavaheaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
-
-
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -19,9 +15,8 @@ import java.util.Map;
 
 @Service
 public class JavaHeaderService {
-    private final String LOCALHOST_IPV4 = "127.0.0.1";
-    private final String LOCALHOST_IPV6 = "0:0:0:0:0:0:0:1";
-    private HttpServletRequest request;
+
+    private final HttpServletRequest request;
     private static String remoteAddr = "";
     public JavaHeaderService(HttpServletRequest request) {
         this.request = request;
@@ -41,27 +36,30 @@ public class JavaHeaderService {
 
         Map<String, String> result = new HashMap<>();
 
-        Enumeration headerNames = request.getHeaderNames();
+        Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
-            String key = (String) headerNames.nextElement();
+            String key = headerNames.nextElement();
             String value = request.getHeader(key);
             result.put(key, value);
         }
-
         return result;
     }
 
     public String getClientIp() {
+
+        final String LOCALHOST_IPV4 = "127.0.0.1";
+        final String LOCALHOST_IPV6 = "0:0:0:0:0:0:0:1";
+
         String ipAddress = request.getHeader("X-Forwarded-For");
-        if(StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+        if(!StringUtils.hasLength(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("Proxy-Client-IP");
         }
 
-        if(StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+        if(!StringUtils.hasLength(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getHeader("WL-Proxy-Client-IP");
         }
 
-        if(StringUtils.isEmpty(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
+        if(!StringUtils.hasLength(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getRemoteAddr();
             if(LOCALHOST_IPV4.equals(ipAddress) || LOCALHOST_IPV6.equals(ipAddress)) {
                 try {
@@ -73,32 +71,31 @@ public class JavaHeaderService {
             }
         }
 
-        if(!StringUtils.isEmpty(ipAddress)
+        if(StringUtils.hasLength(ipAddress)
                 && ipAddress.length() > 15
                 && ipAddress.indexOf(",") > 0) {
             ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
         }
-
         return ipAddress;
     }
-
 
     public String date(){
         Date date = new Date();
         return date.toString();
     }
 
-    public String md5(String incString) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public String md5(String incString) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
         byte[] bytesOfMessage = incString.getBytes(StandardCharsets.UTF_8);
         byte[] theMD5digest = md.digest(bytesOfMessage);
 
         //converting byte array into signum representation
         BigInteger no = new BigInteger(1, theMD5digest);
-//converting message digest into hex value
+        //converting message digest into hex value
+        StringBuilder sb = new StringBuilder();
         String hashtext = no.toString(16);
         while (hashtext.length() < 32) {
-            hashtext = "0" + hashtext;
+            hashtext = sb.append("0").append(hashtext).toString();
         }
 
         return hashtext;

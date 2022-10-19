@@ -1,13 +1,11 @@
 package net.yorksolutions.emilymilldrumjavaheaders;
 
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.Map;
 
 @RestController
@@ -35,9 +33,7 @@ public class JavaHeaderController {
     }
 
     @GetMapping("/md5/{input}")
-    public String md5(@PathVariable String input) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public String md5(@PathVariable String input) throws NoSuchAlgorithmException {
         return this.javaHeaderService.md5(input);
     }
-
-
 }
