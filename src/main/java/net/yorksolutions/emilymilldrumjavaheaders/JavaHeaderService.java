@@ -1,7 +1,13 @@
 package net.yorksolutions.emilymilldrumjavaheaders;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.tomcat.util.json.JSONParser;
+import org.springframework.boot.json.JacksonJsonParser;
+import org.springframework.boot.json.JsonParseException;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -22,15 +28,15 @@ public class JavaHeaderService {
         this.request = request;
     }
 
-    public String ip(){
-        if (request != null){
-            remoteAddr = request.getHeader("X-FORWARDED-FOR");
-            if (remoteAddr == null || "".equals(remoteAddr)) {
-                remoteAddr = request.getRemoteAddr();
-            }
-        }
-        return remoteAddr;
-    }
+//    public String ip(){
+//        if (request != null){
+//            remoteAddr = request.getHeader("X-FORWARDED-FOR");
+//            if (remoteAddr == null || "".equals(remoteAddr)) {
+//                remoteAddr = request.getRemoteAddr();
+//            }
+//        }
+//        return remoteAddr;
+//    }
 
     public Map<String, String> getRequestHeadersInMap() {
 
@@ -100,6 +106,51 @@ public class JavaHeaderService {
 
         return hashtext;
         //return theMD5digest.toString();
+    }
+
+//    public String jsonTest(String jsonInc) {
+//        //
+//        //        System.out.println(valid + " " + jsonInc);
+//        boolean valid = false;
+////        const json = '{"result":true, "count":42}';
+//        String error = "invalid json";
+//        try {
+//            JSONParser jsonParsing = new JSONParser(jsonInc);
+//            JacksonJsonParser
+//                    valid = true;
+//            return "Valid";
+//        } catch (JsonParseException,IllegalArgumentException){
+//            valid = false;
+//            System.out.println(error);
+//            return "Invalid";
+//        }
+////        const str = JSON.stringify(obj);
+////        console.log(str);
+//        // expected output: {"result":true,"count":42}
+//        // r
+//    }
+
+
+    // https://docs.spring.io/spring-boot/docs/3.0.0-SNAPSHOT/api/org/springframework/boot/json/package-summary.html
+    // the answer is here somewhere lol
+    public boolean jsonTest(String json) {
+        try {
+            JSONParser jsonParsing = new JSONParser(json);
+//            final JsonParser parser = (JsonParser) new ObjectMapper().getFactory()
+//                    .createParser(json);
+            while (jsonParsing != null) {
+            }
+            return true;
+        } catch (JsonParseException jpe) {
+            jpe.printStackTrace();
+            return false;
+//        } catch (IOException ioe) {
+//            ioe.printStackTrace();
+//            return false;
+        } catch (IllegalArgumentException iae){
+            iae.printStackTrace();
+            return  false;
+        }
     }
 
 

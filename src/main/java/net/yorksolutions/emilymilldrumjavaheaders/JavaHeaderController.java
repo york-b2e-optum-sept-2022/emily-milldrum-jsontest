@@ -1,10 +1,10 @@
 package net.yorksolutions.emilymilldrumjavaheaders;
 
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
@@ -36,4 +36,11 @@ public class JavaHeaderController {
     public String md5(@PathVariable String input) throws NoSuchAlgorithmException {
         return this.javaHeaderService.md5(input);
     }
+
+    @GetMapping("/jsontest/{jsonInc}")
+    public boolean jsonTest(@PathVariable String jsonInc) throws IllegalArgumentException{
+        return this.javaHeaderService.jsonTest(jsonInc);
+    }
+
+
 }
